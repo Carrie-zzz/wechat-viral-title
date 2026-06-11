@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物医药AI爆款标题工具箱</title>
+<style>
+  * { margin:0; padding:0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #f0f4f8; color: #1a1a1a; line-height: 1.6;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px; }
+  header { text-align: center; padding: 24px 0 16px; }
+  header h1 { font-size: 22px; color: #028090; margin-bottom: 6px; }
+  header p { color: #666; font-size: 13px; }
+
+  .tabs { display: flex; gap: 6px; margin: 16px 0; overflow-x: auto; }
+  .tab {
+    flex: 1; min-width: 80px; padding: 10px 8px; border: none; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer; background: #e8ecf0; color: #555;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .tab.active { background: #028090; color: #fff; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: #fff; border-radius: 14px; padding: 20px; margin: 12px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card h3 { font-size: 15px; color: #028090; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .card h3 .num {
+    width: 22px; height: 22px; border-radius: 50%; background: #028090; color: #fff;
+    font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .formula-card {
+    border-left: 4px solid #028090; padding: 14px 16px; margin: 10px 0;
+    background: #f8fafc; border-radius: 0 10px 10px 0;
+  }
+  .formula-card h4 { font-size: 14px; color: #333; margin-bottom: 6px; }
+  .formula-card .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px;
+    background: #e8f4f8; color: #028090; margin-right: 6px; margin-bottom: 6px;
+  }
+  .formula-card p { font-size: 13px; color: #555; margin: 4px 0; }
+  .formula-card .example { font-size: 12px; color: #028090; background: #fff; padding: 8px; border-radius: 6px; margin-top: 8px; }
+
+  textarea, input[type="text"] {
+    width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 10px;
+    font-size: 14px; font-family: inherit; transition: border-color 0.2s;
+  }
+  textarea:focus, input:focus { outline: none; border-color: #028090; }
+  textarea { resize: vertical; min-height: 80px; }
+
+  button.action {
+    width: 100%; padding: 12px; border: none; border-radius: 10px; margin-top: 10px;
+    font-size: 15px; font-weight: 600; cursor: pointer; background: #028090; color: #fff;
+    transition: all 0.15s;
+  }
+  button.action:hover { background: #026d7a; }
+
+  .output { margin-top: 14px; }
+  .output-item {
+    padding: 12px 14px; background: #f0faf6; border-radius: 10px; margin: 8px 0;
+    font-size: 14px; border-left: 3px solid #1D9E75;
+  }
+  .output-item .score { float: right; font-size: 12px; color: #666; }
+
+  .word-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .word-chip {
+    padding: 4px 10px; border-radius: 12px; font-size: 12px; background: #e8f4f8; color: #028090;
+    cursor: pointer; transition: all 0.1s; user-select: none;
+  }
+  .word-chip:hover { background: #028090; color: #fff; }
+  .word-chip.copied { background: #1D9E75; color: #fff; }
+
+  .checklist label {
+    display: block; padding: 8px 0; font-size: 14px; color: #333; cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .checklist label:last-child { border-bottom: none; }
+  .checklist input { margin-right: 8px; accent-color: #028090; }
+  .checklist .checked { color: #1D9E75; }
+
+  .progress { margin-top: 12px; height: 8px; background: #e8ecf0; border-radius: 4px; overflow: hidden; }
+  .progress-bar { height: 100%; background: #028090; border-radius: 4px; transition: width 0.3s; }
+
+  .footer { text-align: center; padding: 24px 0 12px; color: #aaa; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>生物医药 / AI制药 爆款标题工具箱</h1>
+    <p>8大公式 · 关键词库 · 标题生成 · 自检清单</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(0)">公式速查</button>
+    <button class="tab" onclick="switchTab(1)">标题生成</button>
+    <button class="tab" onclick="switchTab(2)">关键词库</button>
+    <button class="tab" onclick="switchTab(3)">自检清单</button>
+  </div>
+
+  <!-- Panel 1: 公式速查 -->
+  <div class="panel active" id="panel0">
+    <div class="card">
+      <h3><span class="num">1</span>管线里程碑式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>临床数据公布、NDA/BLA提交、获批上市、关键终点达成</p>
+        <div style="margin-top:8px">
+          <span class="tag">临床</span><span class="tag">II期</span><span class="tag">获批</span><span class="tag">数据</span><span class="tag">终点</span><span class="tag">FDA</span>
+        </div>
+        <div class="example">示例：英矽智能 ISM001-055 IIa期数据公布，IPF患者FVC改善98.4mL</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">2</span>不可成药突破式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>新靶点成药、first-in-class、KRAS/MYC等难成药靶点进展</p>
+        <div style="margin-top:8px">
+          <span class="tag">不可成药</span><span class="tag">首次</span><span class="tag">突破</span><span class="tag">靶点</span><span class="tag">KRAS</span>
+        </div>
+        <div class="example">示例：KRAS G12D：第一个AI发现的非共价抑制剂，长这样</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">3</span>方法学对比式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>AI vs传统方法、新方法验证、benchmark比较</p>
+        <div style="margin-top:8px">
+          <span class="tag">对比</span><span class="tag">vs</span><span class="tag">传统</span><span class="tag">筛了</span><span class="tag">头对头</span>
+        </div>
+        <div class="example">示例：同一个GPCR靶点，传统方法筛了5年，AF3两周给出结构</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">4</span>大厂实践深挖式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>药企内部报告、独家数据、实践复盘</p>
+        <div style="margin-top:8px">
+          <span class="tag">内部</span><span class="tag">报告</span><span class="tag">诺华</span><span class="tag">辉瑞</span><span class="tag">揭秘</span><span class="tag">独家</span>
+        </div>
+        <div class="example">示例：诺华内部报告：生成式AI在hit finding中的真实表现</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">5</span>学术到工业鸿沟式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>论文vs实际落地、SOTA方法在工业界的表现</p>
+        <div style="margin-top:8px">
+          <span class="tag">论文</span><span class="tag">落地</span><span class="tag">SOTA</span><span class="tag">沉默了</span><span class="tag">CRO</span>
+        </div>
+        <div class="example">示例：大家都认为分子对接已解决，但FEP+说还有40%的误差</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">6</span>反直觉发现式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>与常识相悖的结果、负面数据、意外发现</p>
+        <div style="margin-top:8px">
+          <span class="tag">？</span><span class="tag">为什么</span><span class="tag">但</span><span class="tag">其实</span><span class="tag">原来</span><span class="tag">颠覆</span>
+        </div>
+        <div class="example">示例：AlphaFold 3放开代码了，但做虚拟筛选的人发现了3个坑</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">7</span>交易与格局变化式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>融资、并购、合作、管线交易、IPO、退出</p>
+        <div style="margin-top:8px">
+          <span class="tag">融资</span><span class="tag">合作</span><span class="tag">交易</span><span class="tag">收购</span><span class="tag">退出</span><span class="tag">美元</span>
+        </div>
+        <div class="example">示例：英矽智能3亿美元融资后，AI制药进入淘汰赛</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="num">8</span>个人亲历式</h3>
+      <div class="formula-card">
+        <h4>适用场景</h4>
+        <p>行业观察、职业经历、踩坑复盘</p>
+        <div style="margin-top:8px">
+          <span class="tag">我</span><span class="tag">面试了</span><span class="tag">踩过</span><span class="tag">年</span><span class="tag">发现</span><span class="tag">经历</span>
+        </div>
+        <div class="example">示例：我面了10家AI制药公司，发现HR都在问同一个问题</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel 2: 标题生成 -->
+  <div class="panel" id="panel1">
+    <div class="card">
+      <h3>输入文章核心内容</h3>
+      <textarea id="genInput" placeholder="例如：英矽智能的ISM001-055在IPF IIa期临床中，FVC改善98.4mL，是全球首个AI设计的进入临床验证的药物"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <select id="genFormula" style="flex:1;padding:10px;border:1.5px solid #ddd;border-radius:10px;font-size:14px">
+          <option value="all">全部公式</option>
+          <option value="milestone">管线里程碑式</option>
+          <option value="undruggable">不可成药突破式</option>
+          <option value="comparison">方法学对比式</option>
+          <option value="bigpharma">大厂实践深挖式</option>
+          <option value="gap">学术工业鸿沟式</option>
+          <option value="counter">反直觉发现式</option>
+          <option value="deal">交易格局变化式</option>
+          <option value="personal">个人亲历式</option>
+        </select>
+      </div>
+      <button class="action" onclick="generateTitles()">生成候选标题</button>
+      <div class="output" id="genOutput"></div>
+    </div>
+  </div>
+
+  <!-- Panel 3: 关键词库 -->
+  <div class="panel" id="panel2">
+    <div class="card">
+      <h3>通用情绪词（点击复制）</h3>
+      <div class="word-grid" id="words1"></div>
+    </div>
+    <div class="card">
+      <h3>管线/临床词</h3>
+      <div class="word-grid" id="words2"></div>
+    </div>
+    <div class="card">
+      <h3>技术/方法词</h3>
+      <div class="word-grid" id="words3"></div>
+    </div>
+    <div class="card">
+      <h3>公司/机构词</h3>
+      <div class="word-grid" id="words4"></div>
+    </div>
+    <div class="card">
+      <h3>靶点/疾病词</h3>
+      <div class="word-grid" id="words5"></div>
+    </div>
+    <div class="card">
+      <h3>商业/交易词</h3>
+      <div class="word-grid" id="words6"></div>
+    </div>
+  </div>
+
+  <!-- Panel 4: 自检清单 -->
+  <div class="panel" id="panel3">
+    <div class="card">
+      <h3>发布前自检清单</h3>
+      <div class="checklist" id="checklist"></div>
+      <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+      <p style="text-align:center;margin-top:8px;font-size:13px;color:#666" id="progressText">0/9 项已检查</p>
+    </div>
+  </div>
+
+  <div class="footer">生物医药 / AI制药 爆款标题方法论 | AIDD Viral Title Skill</div>
+</div>
+
+<script>
+function switchTab(idx) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+// Keywords data
+const KEYWORDS = {
+  words1: ['刚刚','首次','沉默了','真相','揭秘','突破','不可成药','落地了吗','合成得了吗','临床验证','湿实验','头对头','回顾性','真实世界','领先多少','对手在用','窗口期','内部报告','IPO','协议','信号','我以为','其实','原来','为什么','吗'],
+  words2: ['临床','II期','III期','终点','FVC','IPF','NDA','BLA','FDA','NMPA','获批','受理','PDUFA','ORR','PFS','OS','入组','双盲','安慰剂'],
+  words3: ['AI','靶点','分子','管线','PD-1','小分子','大分子','抗体','ADMET','HTS','虚拟筛选','分子对接','FEP+','QSAR','生成式','DiffDock','AlphaFold','RFdiffusion','CADD','AIDD','DEL','DNA编码化合物库','变构','共价','PROTAC'],
+  words4: ['诺华','辉瑞','罗氏','默沙东','赛诺菲','BMS','阿斯利康','强生','礼来','英矽智能','晶泰科技','深势科技','百图生科','剂泰科技','星药科技','药明康德','药明生物','信达生物'],
+  words5: ['KRAS','MYC','GPCR','GPX4','TEAD','STING','CD47','CLDN18.2','TROP2','HER2','EGFR','ALK','ROS1','BTK','JAK','SIRPα','LAG-3','TIGIT','特发性肺纤维化','非小细胞肺癌','实体瘤','血液瘤'],
+  words6: ['融资','IPO','收购','合作','交易','license-in','license-out','里程碑','首付款','BD','退出','PIPE','SPAC','估值','对赌','优先购买权']
+};
+
+Object.keys(KEYWORDS).forEach(key => {
+  const el = document.getElementById(key);
+  if(!el) return;
+  el.innerHTML = KEYWORDS[key].map(w => `<span class="word-chip" onclick="copyWord(this,'${w}')">${w}</span>`).join('');
+});
+
+function copyWord(el, text) {
+  navigator.clipboard.writeText(text);
+  el.classList.add('copied');
+  setTimeout(() => el.classList.remove('copied'), 800);
+}
+
+// Checklist
+const CHECKS = [
+  '长度15-25字（最优18-22字）',
+  '前15字包含钩子（数字/问号/核心词）',
+  '至少1个具体数字（阶段/百分比/样本量/金额）',
+  '至少1个情绪/悬念词或问号',
+  '使用领域术语精准筛选读者',
+  '无高危词（震惊/颠覆/神药/治愈等）',
+  '无绝对禁区（AI颠覆药物研发/AI设计的药物等）',
+  '匹配至少1个爆款公式',
+  '目标读者会产生"我必须点进去"的冲动'
+];
+
+const checklistEl = document.getElementById('checklist');
+checklistEl.innerHTML = CHECKS.map((c,i) => `
+  <label id="cl${i}"><input type="checkbox" onchange="updateProgress()"> ${c}</label>
+`).join('');
+
+function updateProgress() {
+  const total = CHECKS.length;
+  const checked = document.querySelectorAll('.checklist input:checked').length;
+  document.getElementById('progressBar').style.width = (checked/total*100)+'%';
+  document.getElementById('progressText').textContent = `${checked}/${total} 项已检查`;
+  CHECKS.forEach((_,i) => {
+    const lbl = document.getElementById('cl'+i);
+    const cb = lbl.querySelector('input');
+    lbl.classList.toggle('checked', cb.checked);
+  });
+}
+
+// Title generator
+function generateTitles() {
+  const input = document.getElementById('genInput').value.trim();
+  const formula = document.getElementById('genFormula').value;
+  if(!input) { alert('请输入文章核心内容'); return; }
+
+  // Simple heuristic generator
+  const templates = [];
+  if(formula==='all' || formula==='milestone')
+    templates.push({t:'[公司] [药物] [阶段] 数据公布，[指标] [结果]', f:'管线里程碑式'});
+  if(formula==='all' || formula==='undruggable')
+    templates.push({t:'[靶点]：第一个 [方法] [药物类型]，长这样', f:'不可成药突破式'});
+  if(formula==='all' || formula==='comparison')
+    templates.push({t:'同一个 [靶点]，传统方法 [时间]，[新方法] [结果]', f:'方法学对比式'});
+  if(formula==='all' || formula==='bigpharma')
+    templates.push({t:'[公司] 内部报告：[技术] 在 [环节] 的真实表现', f:'大厂实践深挖式'});
+  if(formula==='all' || formula==='gap')
+    templates.push({t:'大家都认为 [方法] 已解决，但 [指标] 说还有 [数字]', f:'学术工业鸿沟式'});
+  if(formula==='all' || formula==='counter')
+    templates.push({t:'[事件] 成功了，但业内人却在讨论这 [数字] 个隐忧', f:'反直觉发现式'});
+  if(formula==='all' || formula==='deal')
+    templates.push({t:'[公司] [金额] [事件] 后，[领域] 格局变了', f:'交易格局变化式'});
+  if(formula==='all' || formula==='personal')
+    templates.push({t:'我 [动作] 了 [对象] [时间]，[发现]', f:'个人亲历式'});
+
+  const output = document.getElementById('genOutput');
+  if(templates.length===0) { output.innerHTML=''; return; }
+
+  output.innerHTML = '<h4 style="margin-top:10px;color:#555;font-size:13px">候选标题（请根据实际内容替换占位符）：</h4>' +
+    templates.map(x => `
+      <div class="output-item">
+        <span class="score">${x.f}</span>
+        <div style="margin-right:80px">${x.t}</div>
+      </div>
+    `).join('');
+}
+</script>
+</body>
+</html>
